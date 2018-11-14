@@ -6,69 +6,80 @@
 /*   By: mfierlaf <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/06 15:15:07 by mfierlaf          #+#    #+#             */
-/*   Updated: 2018/11/14 11:15:22 by mfierlaf         ###   ########.fr       */
+/*   Updated: 2018/11/14 17:11:22 by mfierlaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "get_next_line.h"
+#include "stdio.h"
 
 int	get_next_line(const int fd, char **line)
 {
 	char		buf[BUFF_SIZE + 1];
 	char		*tmp;
-	static char	*stock;
+	int			j;
 	int			i;
 	int			k;
-
+	static char	*stock;
+	char		*s;
+	j = 0;
 	k = 0;
 	i = 0;
-	if ((stock = malloc(sizeof(char)* BUFF_SIZE)) == NULL)
-		return (0);
-	while (read(fd,buf,BUFF_SIZE) != 0)
+	if ((tmp = ft_strnew(0)) == NULL)
+		return (-1);
+	if (stock != NULL)
 	{
-		while (buf[i] != '\n')
+		while (stock[i] != '\n' && stock[i] != '\0')
 			i++;
-		if ((tmp = malloc(sizeof(char)* i + 1)) == NULL)
-			return (0);
-		if (!buf[i])
+		if (stock[i] == '\0')
 		{
-			if (tmp == NULL)
-			{
-				tmp = ft_strdup(buf);
-				free(buf);
-				tmp = ft_strjoin(stock, tmp);
-				free(stock);
-			}
-			else
-			{
-				tmp = ft_strjoin(tmp, buf);
-				free(buf);
-				tmp = ft_strjoin(stock, tmp);
-				free(stock);
-			}
+			tmp = ft_strjoin(tmp, stock);
+			free(stock);
 		}
 		else
 		{
-			if (tmp == NULL)
+			s = ft_strnew(i);
+			s = ft_strncpy(s, stock, i);
+			tmp = ft_strjoin(tmp, s);
+			free(s);
+			*line = tmp;
+			stock = ft_strsub(stock, i + 1, (ft_strlen(stock) - (i + 1)));
+			return (1);
+		}
+	}
+	while (read(fd,buf,BUFF_SIZE) != 0)
+	{
+		i = 0;
+		while (buf[i] != '\n' && buf[i] != '\0')
+			i++;		
+		if (buf[i] == '\0')
+		{
+			tmp = ft_strjoin(tmp, buf);
+		}
+		else
+		{
+			k = 0;
+			j = ft_strlen(tmp);
+			while (k < i)
 			{
-				i = 0;
-				while(buf[i] != '\n')
-				{
-					tmp[i] = buf[i];
-					i++;
-				}
-				tmp = ft_strjoin(stock, tmp);
+				tmp[j + k] = buf[k];
+				k++;
 			}
-			else
-				tmp = ft_strncat(tmp, buf, i);
+			tmp[j + k] = '\0';
+			ft_strcpy(*line, tmp);
+			ft_strclr(tmp);
+			k = 0;
+			if((stock = malloc(sizeof(char) * (ft_strlen(buf) - i + 1))) == NULL)
+				return (-1);
 			while (buf[i])
 			{
 				stock[k] = buf[i];
-				i++;
 				k++;
+				i++;
 			}
 			stock[k] = '\0';
-			i = ft_strlen(tmp);
-			tmp[i] = '\0';
-			return (tmp);
+			return (1);
 		}
 	}
+	return (0);
 }
