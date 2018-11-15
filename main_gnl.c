@@ -6,7 +6,7 @@
 /*   By: mfierlaf <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/14 13:56:19 by mfierlaf          #+#    #+#             */
-/*   Updated: 2018/11/14 16:42:07 by mfierlaf         ###   ########.fr       */
+/*   Updated: 2018/11/15 16:20:57 by mfierlaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,31 +18,15 @@ int	main(void)
 {
 	char *line;
 	int fd ;
-	int res;
-	fd = open("text.txt", O_RDONLY);
-	res = get_next_line(fd, &line);
-	printf("%d\n", res);
-	printf("%s\n", line);
-    res = get_next_line(fd, &line);
-    printf("%d\n", res);
-    printf("%s\n", line);
-    res = get_next_line(fd, &line);
-    printf("%d\n", res);
-    printf("%s\n", line);
-    res = get_next_line(fd, &line);
-    printf("%d\n", res);
-    printf("%s\n", line);
-    res = get_next_line(fd, &line);
-    printf("%d\n", res);
-    printf("%s\n", line);
-    res = get_next_line(fd, &line);
-    printf("%d\n", res);
-    printf("%s\n", line);
-    res = get_next_line(fd, &line);
-    printf("%d\n", res);
-    printf("%s\n", line);
-    res = get_next_line(fd, &line);
-    printf("%d\n", res);
-    printf("%s\n", line);
+	fd = open("get_next_line.c", O_RDONLY);
+	line = NULL;
+	int ret;
+	get_next_line(fd, &line);
+	/*while ((ret = get_next_line(fd, &line)) > 0)
+	{
+		printf("line = %s\n", line);
+		free(line);
+		line = NULL;
+	}*/
 	return (0);
 }
