@@ -12,17 +12,43 @@
 
 #include "get_next_line.h"
 #include "stdio.h"
+#include <limits.h>
+
+char	*endofl(char *buf, char **line, int ret, char *stock)
+{
+	int k;
+	int i;
+	char *s;
+
+	i = 0;
+	while (buf[i] != '\n' && i < ret)
+		i++;
+	k = 0;
+	buf[i] = '\0';
+	s = *line;
+	*line = ft_strjoin(*line, buf);
+	ft_strdel(&s);
+	if ((stock = ft_strnew(BUFF_SIZE)) == NULL)
+		return (NULL);
+	i++;
+	while (i < ret)
+	{
+		stock[k] = buf[i];
+		k++;
+		i++;
+	}
+	stock[k] = '\0';
+	return (stock);
+}
 
 int	get_next_line(const int fd, char **line)
 {
 	char		buf[BUFF_SIZE + 1];
 	int			i;
-	int			k;
 	int 		ret;
-	static char	*stock;
-	char		*s[2];
+	static char *stock;
+	char		*s;
 
-	k = 0;
 	ret = 0;
 	i = 0;
 	if ((*line = ft_strnew(0)) == NULL)
@@ -33,26 +59,26 @@ int	get_next_line(const int fd, char **line)
 			i++;
 		if (stock[i] == '\0')
 		{
-			s[0] = *line;
-			*line = ft_strjoin(s[0], stock);
-			ft_strdel(&s[0]);
+			s = *line;
+			*line = ft_strjoin(s, stock);
+			ft_strdel(&s);
 			ft_strdel(&stock);
 		}
 		else
 		{
-			if ((s[0] = ft_strnew(i)) == NULL)
+			if ((s = ft_strnew(i)) == NULL)
 				return (-1);
-			ft_strncpy(s[0], stock, i);
-			*line = ft_strdup(s[0]);
-			ft_strdel(&s[0]);
-			s[0] = stock;
+			ft_strncpy(s, stock, i);
+			*line = ft_strdup(s);
+			ft_strdel(&s);
+			s = stock;
 			i++;
-			stock = ft_strsub(s[0], i, (ft_strlen(stock) - (i)));
-			ft_strdel(&s[0]);
+			stock = ft_strsub(s, i, (ft_strlen(stock) - (i)));
+			ft_strdel(&s);
 			return (1);
 		}
 	}
-	while ((ret = read(fd, buf, BUFF_SIZE)) > 0)
+	while ((ret = (read(fd, buf, BUFF_SIZE))) > 0)
 	{
 		i = 0;
 		buf[ret] = '\0';
@@ -62,27 +88,14 @@ int	get_next_line(const int fd, char **line)
 		}
 		if (i == ret)
 		{
-			s[0] = *line;
-			*line = ft_strjoin(s[0], buf);
-			ft_strdel(&s[0]);
+			s = *line;
+			*line = ft_strjoin(s, buf);
+			ft_strdel(&s);
 		}
 		else
 		{
-			buf[i] = '\0';
-			s[0] = *line;
-			*line = ft_strjoin(*line, buf);
-			ft_strdel(&s[0]);
-			if ((stock = ft_strnew(BUFF_SIZE)) == NULL)
-				return (-1);
-			i++;
-			while (i < ret)
-			{
-				stock[k] = buf[i];
-				k++;
-				i++;
-			}
-			stock[k] = '\0';
-			return (1);
+			if ((stock = endofl(buf, line, ret, stock)) != NULL)
+				return (1);
 		}
 	}
 	return (0);
