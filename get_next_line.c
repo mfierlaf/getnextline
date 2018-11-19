@@ -62,7 +62,9 @@ int	get_next_line(const int fd, char **line)
 		}
 		if (i == ret)
 		{
-			*line = ft_strjoin(*line, buf);
+			s[0] = *line;
+			*line = ft_strjoin(s[0], buf);
+			ft_strdel(&s[0]);
 		}
 		else
 		{
