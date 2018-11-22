@@ -81,7 +81,6 @@ char	*boucle(char **line, char *buf, char *stock, int fd)
 	int		i;
 	int		ret;
 
-	ret = 0;
 	while ((ret = (read(fd, buf, BUFF_SIZE))) > 0)
 	{
 		i = 0;
@@ -91,8 +90,6 @@ char	*boucle(char **line, char *buf, char *stock, int fd)
 		if (i == ret)
 		{
 			join(*&line, buf);
-			if (ret < BUFF_SIZE)
-				return (*line);
 		}
 		else
 		{
@@ -102,6 +99,8 @@ char	*boucle(char **line, char *buf, char *stock, int fd)
 				return (stock);
 		}
 	}
+	if (ret == -1)
+		return (ERROR);
 	return (NULL);
 }
 
@@ -110,6 +109,8 @@ int		get_next_line(const int fd, char **line)
 	char		buf[BUFF_SIZE + 1];
 	static char *stock[OPEN_MAX];
 
+	if (fd < 0 || fd > OPEN_MAX || read(fd, buf, 0) == -1)
+		return (-1);
 	if ((*line = ft_strnew(0)) == NULL)
 		return (-1);
 	if (stock[fd] != NULL)
@@ -123,6 +124,7 @@ int		get_next_line(const int fd, char **line)
 		return (-1);
 	else if (stock[fd] != NULL)
 		return (1);
-	ft_strdel(&stock[fd]);
-	return (0);
+	if (*line[0] == '\0')
+		return (0);
+	return (1);
 }
