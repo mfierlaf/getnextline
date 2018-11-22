@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include "stdio.h"
-#include <limits.h>
 
 int		join(char **src, char *add)
 {
