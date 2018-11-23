@@ -6,7 +6,7 @@
 /*   By: mfierlaf <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/06 15:15:07 by mfierlaf          #+#    #+#             */
-/*   Updated: 2018/11/22 10:29:39 by mfierlaf         ###   ########.fr       */
+/*   Updated: 2018/11/23 14:12:11 by mfierlaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ int		get_next_line(const int fd, char **line)
 	char		buf[BUFF_SIZE + 1];
 	static char *stock[OPEN_MAX];
 
-	if (fd < 0 || fd > OPEN_MAX || read(fd, buf, 0) == -1)
+	if (fd < 0 || fd > OPEN_MAX || read(fd, buf, 0) == -1 || !(line))
 		return (-1);
 	if ((*line = ft_strnew(0)) == NULL)
 		return (-1);
