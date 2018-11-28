@@ -17,7 +17,6 @@
 # define BUFF_SIZE 801
 # define ERROR "ERROR"
 
-
 int	get_next_line(const int fd, char **line);
 
 #endif
